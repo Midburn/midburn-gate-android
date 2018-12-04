@@ -6,7 +6,8 @@ data class TicketNew(val ticket: InnerTicket, val gate_status: String) : Seriali
 
 data class InnerTicket(val barcode: String, val ticket_number: Int, val order_id: Int, val holder_name: String,
                        val type: String, val inside_event: Int, val israeli_id: String,
-                       val disabled_parking: Int, val entrance_group_id : Int, val groups : Array<Group>) : Serializable{
+                       val disabled_parking: Int, val entrance_group_id: Int,
+                       val production_early_arrival: Boolean, val groups: Array<Group>) : Serializable {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -23,6 +24,7 @@ data class InnerTicket(val barcode: String, val ticket_number: Int, val order_id
         if (israeli_id != other.israeli_id) return false
         if (disabled_parking != other.disabled_parking) return false
         if (entrance_group_id != other.entrance_group_id) return false
+        if (production_early_arrival != other.production_early_arrival) return false
         if (!groups.contentEquals(other.groups)) return false
 
         return true
@@ -38,9 +40,11 @@ data class InnerTicket(val barcode: String, val ticket_number: Int, val order_id
         result = 31 * result + israeli_id.hashCode()
         result = 31 * result + disabled_parking
         result = 31 * result + entrance_group_id
+        result = 31 * result + production_early_arrival.hashCode()
         result = 31 * result + groups.contentHashCode()
         return result
     }
+
 
 }
 

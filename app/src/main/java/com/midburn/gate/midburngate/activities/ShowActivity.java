@@ -20,6 +20,7 @@ import com.midburn.gate.midburngate.application.MainApplication;
 import com.midburn.gate.midburngate.consts.AppConsts;
 import com.midburn.gate.midburngate.model.Group;
 import com.midburn.gate.midburngate.model.Ticket;
+import com.midburn.gate.midburngate.network.TicketNew;
 import com.midburn.gate.midburngate.utils.AppUtils;
 
 import org.json.JSONException;
@@ -63,8 +64,8 @@ public class ShowActivity
 	private HttpRequestListener mHttpRequestListener;
 
 	private String mGateCode;
-	private Ticket mTicket;
-	private Group mSelectedGroup;
+	private TicketNew mTicket;
+	private com.midburn.gate.midburngate.network.Group mSelectedGroup;
 
 	public void exit(View view) {
 		boolean hasInternetConnection = AppUtils.isConnected(this);
@@ -79,7 +80,7 @@ public class ShowActivity
 
 		mProgressBar.setVisibility(View.VISIBLE);
 
-		String barcode = mTicket.getBarCode();
+		String barcode = mTicket.getTicket().getBarcode();
 		Log.d(AppConsts.TAG, "user barcode to exit: " + barcode);
 
 		HttpUrl url = new HttpUrl.Builder().scheme("https")
@@ -122,25 +123,25 @@ public class ShowActivity
 	}
 
 	private void handleGroupTypes() {
-		final ArrayList<Group> groupsArrayList = mTicket.getGroups();
+		final com.midburn.gate.midburngate.network.Group[] groups = mTicket.getTicket().getGroups();
 
 		//check if group type is production. if so, select it immediately
-		if (mTicket.isProductionEarlyArrival) {
+		if (mTicket.getTicket().getProduction_early_arrival()) {
 			sendEntranceRequest(PRODUCTION_EARLY_ARRIVAL_WORKAROUND);
 			return;
 		}
 
 		// no groups alert
-		if (groupsArrayList == null || groupsArrayList.size() == 0) {
+		if (groups.length == 0) {
 			AppUtils.createAndShowDialog(this, "שגיאה", getString(R.string.no_early_arrival_message), getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
 			return;
 		}
 
 		// show group selection dialog
-		int groupsArrayListSize = groupsArrayList.size();
+		int groupsArrayListSize = groups.length;
 		CharSequence groupsArray[] = new CharSequence[groupsArrayListSize];
 		for (int i = 0 ; i < groupsArrayListSize ; i++) {
-			Group group = groupsArrayList.get(i);
+			com.midburn.gate.midburngate.network.Group group = groups[i];
 			groupsArray[i] = getGroupType(group) + ": "+ group.getName();
 		}
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -148,7 +149,7 @@ public class ShowActivity
 		builder.setItems(groupsArray, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Group selectedGroup = groupsArrayList.get(which);
+				com.midburn.gate.midburngate.network.Group selectedGroup = groups[which];
 				Log.d(AppConsts.TAG, selectedGroup.getName() + " was clicked. id: " + selectedGroup.getId());
 				mProgressBar.setVisibility(View.VISIBLE);
 				mSelectedGroup = selectedGroup;
@@ -158,11 +159,7 @@ public class ShowActivity
 		builder.show();
 	}
 
-	private String getGroupType(Group group) {
-		if (group.getType() == null) {
-			return "";
-		}
-
+	private String getGroupType(com.midburn.gate.midburngate.network.Group group) {
 		if (group.getType().equals(AppConsts.GROUP_TYPE_ART)) {
 			return "מיצב";
 		}
@@ -179,7 +176,7 @@ public class ShowActivity
 	}
 
 	private void sendEntranceRequestWithoutGroups() {
-		String barcode = mTicket.getBarCode();
+		String barcode = mTicket.getTicket().getBarcode();
 		Log.d(AppConsts.TAG, "user barcode to enter: " + barcode);
 		JSONObject jsonObject = new JSONObject();
 		try {
@@ -199,7 +196,7 @@ public class ShowActivity
 	}
 
 	private void sendEntranceRequest(int groupId) {
-		String barcode = mTicket.getBarCode();
+		String barcode = mTicket.getTicket().getBarcode();
 		Log.d(AppConsts.TAG, "user barcode to enter: " + barcode);
 		JSONObject jsonObject = new JSONObject();
 		try {
@@ -266,13 +263,13 @@ public class ShowActivity
 		String message = "";
 
 		if (mAction == Action.ENTER) {
-			message = mTicket.getTicketOwnerName() + " נכנס/ה בהצלחה לאירוע.";
+			message = mTicket.getTicket().getHolder_name() + " נכנס/ה בהצלחה לאירוע.";
 			if (mState == State.ERALY_ENTRANCE) {
 				message += "\n" + "הקצאה לכניסה מוקדמת - " + (mSelectedGroup != null ? mSelectedGroup
 						.getName() : "הפקה");
 			}
 		} else {
-			message = mTicket.getTicketOwnerName() + " יצא/ה בהצלחה מהאירוע.";
+			message = mTicket.getTicket().getHolder_name() + " יצא/ה בהצלחה מהאירוע.";
 		}
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(ShowActivity.this);
@@ -313,37 +310,37 @@ public class ShowActivity
 			}
 		};
 
-		Ticket ticket = (Ticket) getIntent().getSerializableExtra("ticketDetails");
+		TicketNew ticket = (TicketNew) getIntent().getSerializableExtra("ticketDetails");
 		if (ticket != null) {
 
 			mTicket = ticket;
-			mTicketOrderNumberTextView.setText(String.valueOf(ticket.getInvitationNumber()));
-			mTicketNumberTextView.setText(String.valueOf(ticket.getTicketNumber()));
-			mTicketOwnerNameTextView.setText(ticket.getTicketOwnerName());
-			mTicketTypeTextView.setText(ticket.getTicketType());
-			mTicketOwnerIdTextView.setText(ticket.getTicketOwnerId());
+			mTicketOrderNumberTextView.setText(String.valueOf(ticket.getTicket().getOrder_id()));
+			mTicketNumberTextView.setText(String.valueOf(ticket.getTicket().getTicket_number()));
+			mTicketOwnerNameTextView.setText(ticket.getTicket().getHolder_name());
+			mTicketTypeTextView.setText(ticket.getTicket().getType());
+			mTicketOwnerIdTextView.setText(ticket.getTicket().getIsraeli_id());
 
-			if (mTicket.isProductionEarlyArrival) {
+			if (mTicket.getTicket().getProduction_early_arrival()) {
 				findViewById(R.id.earlyArrivalProductionTV).setVisibility(View.VISIBLE);
 			}
 
 			//decide which button to show (entrance/exit)
-			if (ticket.isInsideEvent() == 0) {
+			if (ticket.getTicket().getInside_event() == 0) {
 				//the user is outside the event
 				mAction = Action.ENTER;
 			}
-			else if (ticket.isInsideEvent() == 1) {
+			else if (ticket.getTicket().getInside_event() == 1) {
 				//the user is inside the event
 				mAction = Action.EXIT;
 			}
 			else {
-				Log.e(AppConsts.TAG, "unknown isInsideEvent state. isInsideEvent: " + ticket.isInsideEvent());
+				Log.e(AppConsts.TAG, "unknown isInsideEvent state. isInsideEvent: " + ticket.getTicket().getInside_event());
 			}
 			toggleButtonsState();
 
 
 			//decide if disabled layout should be displayed
-			if (ticket.getIsDisabled() == 1) {
+			if (ticket.getTicket().getDisabled_parking() == 1) {
 				//show disabled parking
 				mDisabledLayout.setVisibility(View.VISIBLE);
 			}
@@ -352,7 +349,7 @@ public class ShowActivity
 			}
 
 			//early arrival mode
-			if (ticket.getGateStatus() != null && ticket.getGateStatus().equals("early_arrival")) {
+			if (ticket.getGate_status().equals("early_arrival")) {
 				mState = State.ERALY_ENTRANCE;
 			}else { //otherwise, this is the real deal
 				mState = State.MIDBURN;
