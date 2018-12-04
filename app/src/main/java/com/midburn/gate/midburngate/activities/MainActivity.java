@@ -24,6 +24,7 @@ import com.midburn.gate.midburngate.dialogs.CarsDialog;
 import com.midburn.gate.midburngate.model.Group;
 import com.midburn.gate.midburngate.model.Ticket;
 import com.midburn.gate.midburngate.network.NetworkApi;
+import com.midburn.gate.midburngate.network.TicketNew;
 import com.midburn.gate.midburngate.utils.AppUtils;
 
 import net.hockeyapp.android.CrashManager;
@@ -101,24 +102,54 @@ public class MainActivity
 		}
 		AppUtils.showProgressDialog(mProgressDialog);
 
-		HttpUrl url = new HttpUrl.Builder().scheme("https")
-		                                   .host(AppConsts.SERVER_URL)
-		                                   .addPathSegment("api")
-		                                   .addPathSegment("gate")
-		                                   .addPathSegment("get-ticket")
-		                                   .build();
+//		HttpUrl url = new HttpUrl.Builder().scheme("https")
+//		                                   .host(AppConsts.SERVER_URL)
+//		                                   .addPathSegment("api")
+//		                                   .addPathSegment("gate")
+//		                                   .addPathSegment("get-ticket")
+//		                                   .build();
 
-		JSONObject jsonObject = new JSONObject();
-		try {
-			jsonObject.put("event_id", mGateCode);
-			jsonObject.put("ticket", ticketNumber);
-			jsonObject.put("order", invitationNumber);
+//		JSONObject jsonObject = new JSONObject();
+//		try {
+//			jsonObject.put("event_id", mGateCode);
+//			jsonObject.put("ticket", ticketNumber);
+//			jsonObject.put("order", invitationNumber);
+//
+//		} catch (JSONException e) {
+//			Log.e(AppConsts.TAG, e.getMessage());
+//		}
 
-		} catch (JSONException e) {
-			Log.e(AppConsts.TAG, e.getMessage());
-		}
+//		AppUtils.doPOSTHttpRequest(url, jsonObject.toString(), mHttpRequestListener);
+		NetworkApi.INSTANCE.getTicketManually(this, mGateCode, ticketNumber, invitationNumber, new NetworkApi.Callback<TicketNew>() {
+			@Override
+			public void onSuccess(final TicketNew ticketNew) {
+				mProgressDialog.dismiss();
+				Log.d(AppConsts.TAG, "onResponse called");
+				//------------------
+				if (ticketNew == null) {
+					Log.e(AppConsts.TAG, "ticketNew is null");
+					AppUtils.playMusic(MainActivity.this, AppConsts.ERROR_MUSIC);
+					AppUtils.createAndShowDialog(MainActivity.this, "פעולה נכשלה", null, getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
+					return;
+				}
 
-		AppUtils.doPOSTHttpRequest(url, jsonObject.toString(), mHttpRequestListener);
+				AppUtils.playMusic(MainActivity.this, AppConsts.OK_MUSIC);
+
+				Intent intent = new Intent(MainActivity.this, ShowActivity.class);
+				intent.putExtra("event_id", mGateCode);
+				intent.putExtra("ticketDetails", ticketNew);
+				startActivity(intent);
+
+			}
+
+			@Override
+			public void onFailure(@NotNull Throwable throwable) {
+				throwable.printStackTrace();
+				AppUtils.playMusic(MainActivity.this, AppConsts.ERROR_MUSIC);
+				AppUtils.createAndShowDialog(MainActivity.this, "שגיאה", AppUtils.getErrorMessage(MainActivity.this, throwable.getMessage()), getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
+
+			}
+		});
 	}
 
 	public void showCarDialog(View view) {
@@ -334,7 +365,7 @@ public class MainActivity
 			List<String> events = getIntent().getStringArrayListExtra(EVENTS_LIST);
 			if (events == null || events.size() <= 0) {
 				AppUtils.showProgressDialog(mProgressDialog);
-				AppUtils.fetchNewEventsCode(this, mEventsCallback);
+				NetworkApi.INSTANCE.getEvents(this, mEventsCallback);
 			}
 			else {
 				AppUtils.showEventsDialog(this, events, mEventIdFetchedListener);
@@ -387,7 +418,7 @@ public class MainActivity
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						AppUtils.persistEventId(MainActivity.this, "");
-						AppUtils.fetchNewEventsCode(MainActivity.this, mEventsCallback);
+						NetworkApi.INSTANCE.getEvents(MainActivity.this, mEventsCallback);
 					}
 				}, null, android.R.drawable.ic_dialog_alert);
 				return true;

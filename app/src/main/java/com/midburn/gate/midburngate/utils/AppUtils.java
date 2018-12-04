@@ -106,11 +106,7 @@ public class AppUtils {
 		thread.start();
 	}
 
-	public static void fetchNewEventsCode(Context context, NetworkApi.Callback<List<String>> listCallback) {
-		NetworkApi.INSTANCE.getEvents(context, listCallback);
-	}
-
-	public static String getErrorMessage(Context context, String error) {
+    public static String getErrorMessage(Context context, String error) {
 		Log.d(AppConsts.TAG, "error to message: " + error);
 		switch (error) {
 			case AppConsts.QUOTA_REACHED_ERROR:

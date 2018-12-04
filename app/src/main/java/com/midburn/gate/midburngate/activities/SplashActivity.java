@@ -35,32 +35,32 @@ public class SplashActivity
 				AppUtils.createAndShowDialog(this, getString(R.string.no_network_dialog_title), getString(R.string.no_network_dialog_message), getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
 				return;
 			}
-			AppUtils.fetchNewEventsCode(this, new NetworkApi.Callback<List<String>>() {
-				@Override
-				public void onSuccess(List<String> response) {
-					if (response == null) {
-						String errorMessage = "response body is null";
-						onFailure(new Exception(errorMessage));
-						return;
-					}
-					if (response.size() <= 0) {
-						String errorMessage = "events list is empty";
-						onFailure(new Exception(errorMessage));
-						return;
-					}
-					Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-					intent.putStringArrayListExtra(EVENTS_LIST, (ArrayList<String>) response);
-					startActivity(intent);
-				}
+            NetworkApi.INSTANCE.getEvents(this, new NetworkApi.Callback<List<String>>() {
+                    @Override
+                    public void onSuccess(List<String> response) {
+                        if (response == null) {
+                            String errorMessage = "response body is null";
+                            onFailure(new Exception(errorMessage));
+                            return;
+                        }
+                        if (response.size() <= 0) {
+                            String errorMessage = "events list is empty";
+                            onFailure(new Exception(errorMessage));
+                            return;
+                        }
+                        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                        intent.putStringArrayListExtra(EVENTS_LIST, (ArrayList<String>) response);
+                        startActivity(intent);
+                    }
 
-				@Override
-				public void onFailure(@NotNull Throwable throwable) {
-					failureCounter++;
-					Log.e(AppConsts.TAG, throwable.getMessage() + " failureCounter: " + failureCounter);
-					AppUtils.createAndShowDialog(SplashActivity.this, "שגיאה", AppUtils.getErrorMessage(SplashActivity.this, throwable.getMessage()), getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
-					finish();
-				}
-			});
-		}
+                    @Override
+                    public void onFailure(@NotNull Throwable throwable) {
+                        failureCounter++;
+                        Log.e(AppConsts.TAG, throwable.getMessage() + " failureCounter: " + failureCounter);
+                        AppUtils.createAndShowDialog(SplashActivity.this, "שגיאה", AppUtils.getErrorMessage(SplashActivity.this, throwable.getMessage()), getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
+                        finish();
+                    }
+                });
+        }
 	}
 }
