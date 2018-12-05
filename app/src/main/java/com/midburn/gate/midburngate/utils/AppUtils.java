@@ -32,16 +32,7 @@ public class AppUtils {
 
 	private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-	public static void createAndShowDialog(final Context context, String title, String message, @Nullable String positiveButtonText, @Nullable String negativeButtonText, @Nullable DialogInterface.OnClickListener positiveOnClickListener, @Nullable DialogInterface.OnClickListener negativeClickListener, int iconId) {
-		new AlertDialog.Builder(context).setTitle(title)
-		                                .setMessage(message)
-		                                .setPositiveButton(positiveButtonText, positiveOnClickListener)
-		                                .setNegativeButton(negativeButtonText, negativeClickListener)
-		                                .setIcon(iconId)
-		                                .show();
-	}
-
-	public static void playMusic(Context context, int which) {
+    public static void playMusic(Context context, int which) {
 		switch (which) {
 			case AppConsts.OK_MUSIC:
 				MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.ok);

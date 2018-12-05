@@ -2,6 +2,7 @@ package com.midburn.gate.midburngate.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,8 +33,13 @@ public class SplashActivity
 		if (TextUtils.isEmpty(gateCode)) {
 			boolean hasInternetConnection = AppUtils.isConnected(this);
 			if (!hasInternetConnection) {
-				AppUtils.createAndShowDialog(this, getString(R.string.no_network_dialog_title), getString(R.string.no_network_dialog_message), getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
-				return;
+                new AlertDialog.Builder(this).setTitle(getString(R.string.no_network_dialog_title))
+                                                .setMessage(getString(R.string.no_network_dialog_message))
+                                                .setPositiveButton(getString(R.string.ok), null)
+                                                .setNegativeButton(null, null)
+                                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                                .show();
+                return;
 			}
             NetworkApi.INSTANCE.getEvents(this, new NetworkApi.Callback<List<String>>() {
                     @Override
@@ -57,7 +63,12 @@ public class SplashActivity
                     public void onFailure(@NotNull Throwable throwable) {
                         failureCounter++;
                         Log.e(AppConsts.TAG, throwable.getMessage() + " failureCounter: " + failureCounter);
-                        AppUtils.createAndShowDialog(SplashActivity.this, "שגיאה", AppUtils.getErrorMessage(SplashActivity.this, throwable.getMessage()), getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
+                        new AlertDialog.Builder(SplashActivity.this).setTitle("שגיאה")
+                                                        .setMessage(AppUtils.getErrorMessage(SplashActivity.this, throwable.getMessage()))
+                                                        .setPositiveButton(getString(R.string.ok), null)
+                                                        .setNegativeButton(null, null)
+                                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                                        .show();
                         finish();
                     }
                 });

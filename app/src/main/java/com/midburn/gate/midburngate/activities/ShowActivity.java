@@ -18,8 +18,6 @@ import com.midburn.gate.midburngate.HttpRequestListener;
 import com.midburn.gate.midburngate.R;
 import com.midburn.gate.midburngate.application.MainApplication;
 import com.midburn.gate.midburngate.consts.AppConsts;
-import com.midburn.gate.midburngate.model.Group;
-import com.midburn.gate.midburngate.model.Ticket;
 import com.midburn.gate.midburngate.network.TicketNew;
 import com.midburn.gate.midburngate.utils.AppUtils;
 
@@ -27,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import okhttp3.HttpUrl;
 import okhttp3.Response;
@@ -70,7 +67,12 @@ public class ShowActivity
     public void exit(View view) {
         boolean hasInternetConnection = AppUtils.isConnected(this);
         if (!hasInternetConnection) {
-            AppUtils.createAndShowDialog(this, getString(R.string.no_network_dialog_title), getString(R.string.no_network_dialog_message), getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
+            new AlertDialog.Builder(this).setTitle(getString(R.string.no_network_dialog_title))
+                                            .setMessage(getString(R.string.no_network_dialog_message))
+                                            .setPositiveButton(getString(R.string.ok), null)
+                                            .setNegativeButton(null, null)
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
             return;
         }
         if (mTicket == null) {
@@ -104,7 +106,12 @@ public class ShowActivity
     public void entrance(View view) {
         boolean hasInternetConnection = AppUtils.isConnected(this);
         if (!hasInternetConnection) {
-            AppUtils.createAndShowDialog(this, getString(R.string.no_network_dialog_title), getString(R.string.no_network_dialog_message), getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
+            new AlertDialog.Builder(this).setTitle(getString(R.string.no_network_dialog_title))
+                                            .setMessage(getString(R.string.no_network_dialog_message))
+                                            .setPositiveButton(getString(R.string.ok), null)
+                                            .setNegativeButton(null, null)
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
             return;
         }
         if (mTicket == null) {
@@ -131,7 +138,12 @@ public class ShowActivity
 
         // no groups alert
         if (groups.length == 0) {
-            AppUtils.createAndShowDialog(this, "שגיאה", getString(R.string.no_early_arrival_message), getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
+            new AlertDialog.Builder(this).setTitle("שגיאה")
+                                            .setMessage(getString(R.string.no_early_arrival_message))
+                                            .setPositiveButton(getString(R.string.ok), null)
+                                            .setNegativeButton(null, null)
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
             return;
         }
 
@@ -228,7 +240,12 @@ public class ShowActivity
                     if (response == null) {
                         Log.e(AppConsts.TAG, "response is null");
                         AppUtils.playMusic(ShowActivity.this, AppConsts.ERROR_MUSIC);
-                        AppUtils.createAndShowDialog(ShowActivity.this, "פעולה נכשלה", null, getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
+                        new AlertDialog.Builder(this).setTitle("פעולה נכשלה")
+                                                        .setMessage(null)
+                                                        .setPositiveButton(getString(R.string.ok), null)
+                                                        .setNegativeButton(null, null)
+                                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                                        .show();
                         return;
                     }
                     try {
@@ -246,12 +263,22 @@ public class ShowActivity
                             AppUtils.playMusic(ShowActivity.this, AppConsts.ERROR_MUSIC);
                             JSONObject jsonObject = new JSONObject(responseBodyString);
                             String errorMessage = (String) jsonObject.get("error");
-                            AppUtils.createAndShowDialog(ShowActivity.this, "שגיאה", AppUtils.getErrorMessage(ShowActivity.this, errorMessage), getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
+                            new AlertDialog.Builder(this).setTitle("שגיאה")
+                                                            .setMessage(AppUtils.getErrorMessage(this, errorMessage))
+                                                            .setPositiveButton(getString(R.string.ok), null)
+                                                            .setNegativeButton(null, null)
+                                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                                            .show();
                         }
                     } catch (IOException | JSONException e) {
                         Log.e(AppConsts.TAG, e.getMessage());
                         AppUtils.playMusic(ShowActivity.this, AppConsts.ERROR_MUSIC);
-                        AppUtils.createAndShowDialog(ShowActivity.this, "שגיאה", e.getMessage(), getString(R.string.ok), null, null, null, android.R.drawable.ic_dialog_alert);
+                        new AlertDialog.Builder(this).setTitle("שגיאה")
+                                                        .setMessage(e.getMessage())
+                                                        .setPositiveButton(getString(R.string.ok), null)
+                                                        .setNegativeButton(null, null)
+                                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                                        .show();
                     }
                 });
     }
