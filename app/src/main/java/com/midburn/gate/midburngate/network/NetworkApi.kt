@@ -1,6 +1,7 @@
 package com.midburn.gate.midburngate.network
 
 import android.content.Context
+import android.support.annotation.NonNull
 import com.midburn.gate.midburngate.BuildConfig
 import com.midburn.gate.midburngate.consts.AppConsts
 import com.midburn.gate.midburngate.utils.AppUtils.isConnected
@@ -14,8 +15,8 @@ import retrofit2.mock.NetworkBehavior
 object NetworkApi {
 
     interface Callback<in T> {
-        fun onSuccess(response: T)
-        fun onFailure(throwable: Throwable)
+        fun onSuccess(@NonNull response: T)
+        fun onFailure(@NonNull throwable: Throwable)
     }
 
     fun enterCar(context: Context, eventId: String, callback: Callback<Unit>) {
