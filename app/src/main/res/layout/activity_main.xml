@@ -9,7 +9,7 @@
     tools:layout_editor_absoluteY="81dp">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/scanQRCode"
         style="@style/Base.Widget.AppCompat.Button.Colored"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -18,7 +18,6 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="15dp"
         android:gravity="center"
-        android:onClick="scanQR"
         android:text="@string/scan_barcode"
         android:textAppearance="?android:attr/textAppearanceLargeInverse"
         app:layout_constraintBottom_toTopOf="@+id/textView5"
@@ -39,7 +38,7 @@
         app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/scanQRCode" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/textInputLayout"
@@ -55,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/invitationNumberEditText_MainActivity"
+            android:id="@+id/invitationNumberEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="right"
@@ -80,7 +79,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/ticketNumberEditText_MainActivity"
+            android:id="@+id/ticketNumberEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="right"
@@ -98,7 +97,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:onClick="manuallyInput"
         android:text="@string/send"
         android:textAppearance="?android:attr/textAppearanceLargeInverse"
         app:layout_constraintBottom_toTopOf="@+id/space"
@@ -106,22 +104,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 
-
     <ImageButton
         android:id="@+id/carCounterImageButton"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginBottom="8dp"
-        android:onClick="showCarDialog"
+        android:contentDescription="@string/car_counter_button"
         android:scaleType="centerInside"
         android:src="@drawable/car"
-        app:layout_constraintBottom_toTopOf="@+id/eventId_TextView_MainActivity"
+        app:layout_constraintBottom_toTopOf="@id/eventIdTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/space" />
 
     <TextView
-        android:id="@+id/eventId_TextView_MainActivity"
+        android:id="@+id/eventIdTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -141,6 +138,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/getTicketDetailsButton" />
-
 
 </android.support.constraint.ConstraintLayout>

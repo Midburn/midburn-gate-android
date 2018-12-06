@@ -1,4 +1,6 @@
-@file:Suppress("DEPRECATION") //Only for ProgressDialog, this is temporary
+@file:Suppress("DEPRECATION")
+
+//Only for ProgressDialog, this is temporary
 //TODO: stop using ProgressDialog
 
 package com.midburn.gate.midburngate.activities
@@ -17,8 +19,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.TextView
 
 import com.midburn.gate.midburngate.OperationFinishedListener
 import com.midburn.gate.midburngate.R
@@ -32,14 +32,12 @@ import net.hockeyapp.android.CrashManager
 import net.hockeyapp.android.UpdateManager
 
 import com.midburn.gate.midburngate.activities.SplashActivity.EVENTS_LIST
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var mInvitationNumberEditText: EditText? = null
-    private var mTicketNumberEditText: EditText? = null
     private var mCarsDialog: CarsDialog? = null
     private var mProgressDialog: ProgressDialog? = null
-    private var mEventIdTextView: TextView? = null
 
     private var mNeedToDownloadScannerAppClickListener: DialogInterface.OnClickListener? = null
     private var mBackPressedClickListener: DialogInterface.OnClickListener? = null
@@ -67,9 +65,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun manuallyInput(view: View) {
-        val invitationNumber = mInvitationNumberEditText!!.text.toString()
-        val ticketNumber = mTicketNumberEditText!!.text.toString()
+    fun manuallyInput() {
+        val invitationNumber = invitationNumberEditText.text.toString()
+        val ticketNumber = ticketNumberEditText.text.toString()
         if (TextUtils.isEmpty(invitationNumber) || TextUtils.isEmpty(ticketNumber)) {
             AppUtils.playMusic(this, AppConsts.ERROR_MUSIC)
             AlertDialog.Builder(this).setTitle(getString(R.string.manually_validate_dialog_title))
@@ -145,12 +143,12 @@ class MainActivity : AppCompatActivity() {
 
         if (ticketIdentification.ticketNumber != null && ticketIdentification.invitationNumber != null) {
             NetworkApi.getTicketManually(this, mGateCode!!, ticketIdentification.ticketNumber, ticketIdentification.invitationNumber, callback)
-        } else if (ticketIdentification.barcode != null){
+        } else if (ticketIdentification.barcode != null) {
             NetworkApi.getTicket(this, mGateCode!!, ticketIdentification.barcode, callback)
         }
     }
 
-    fun showCarDialog(view: View) {
+    fun showCarDialog() {
         mCarsDialog = CarsDialog(this, { v ->
             Log.d(AppConsts.TAG, "carEnter")
 
@@ -192,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         mCarsDialog!!.show()
     }
 
-    fun scanQR(view: View) {
+    fun scanQR() {
         try {
             //start the scanning activity from the com.google.zxing.client.android.SCAN intent
             val intent = Intent(AppConsts.ACTION_SCAN)
@@ -230,9 +228,25 @@ class MainActivity : AppCompatActivity() {
         window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        bindView()
-        setListeners()
-        checkForUpdates()
+
+        scanQRCode.setOnClickListener { scanQR() }
+        getTicketDetailsButton.setOnClickListener { manuallyInput() }
+        carCounterImageButton.setOnClickListener { showCarDialog() }
+        mProgressDialog = ProgressDialog(this)
+        mNeedToDownloadScannerAppClickListener = DialogInterface.OnClickListener { dialog, _ ->
+            val uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            try {
+                startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                Log.e(AppConsts.TAG, e.message)
+            }
+        }
+        mBackPressedClickListener = DialogInterface.OnClickListener { dialog, which ->
+            //exit app
+            finishAffinity()
+        }
+        UpdateManager.register(this)
 
         //fetch gate code from shared prefs
         mGateCode = AppUtils.getEventId(this)
@@ -253,9 +267,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun onEventIdChanged() {
         if (TextUtils.isEmpty(mGateCode)) {
-            mEventIdTextView!!.text = "חסר קוד אירוע"
+            eventIdTextView.text = "חסר קוד אירוע"
         } else {
-            mEventIdTextView!!.text = mGateCode
+            eventIdTextView.text = mGateCode
         }
     }
 
@@ -300,32 +314,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setListeners() {
-        mNeedToDownloadScannerAppClickListener = DialogInterface.OnClickListener { dialog, which ->
-            val uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android")
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            try {
-                this@MainActivity.startActivity(intent)
-            } catch (e: ActivityNotFoundException) {
-                Log.e(AppConsts.TAG, e.message)
-            }
-        }
-
-        mBackPressedClickListener = DialogInterface.OnClickListener { dialog, which ->
-            //exit app
-            finishAffinity()
-        }
-
-    }
-
-    private fun bindView() {
-        mInvitationNumberEditText = findViewById(R.id.invitationNumberEditText_MainActivity)
-        mTicketNumberEditText = findViewById(R.id.ticketNumberEditText_MainActivity)
-        mProgressDialog = ProgressDialog(this)
-        mEventIdTextView = findViewById(R.id.eventId_TextView_MainActivity)
-    }
-
-
     override fun onBackPressed() {
         AlertDialog.Builder(this).setTitle("האם ברצונך לצאת?")
                 .setMessage("")
@@ -333,11 +321,6 @@ class MainActivity : AppCompatActivity() {
                 .setNegativeButton("לא", null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show()
-    }
-
-    private fun checkForUpdates() {
-        // Remove this for store builds!
-        UpdateManager.register(this)
     }
 
 }
