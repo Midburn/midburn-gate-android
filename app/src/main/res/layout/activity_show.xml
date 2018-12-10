@@ -202,17 +202,16 @@
 
 
     <Button
-        android:id="@+id/exitButton_ShowActivity"
+        android:id="@+id/exitButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:background="@android:color/holo_red_light"
-        android:onClick="exit"
         android:text="@string/exit"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/entranceButton_ShowActivity"
+        app:layout_constraintEnd_toStartOf="@+id/entranceButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_conversion_absoluteHeight="48dp"
@@ -220,35 +219,33 @@
         tools:visibility="visible" />
 
     <Button
-        android:id="@+id/entranceButton_ShowActivity"
+        android:id="@+id/entranceButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:background="@android:color/holo_green_light"
-        android:onClick="entrance"
         android:text="@string/entrance"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/cancelButton_ShowActivity"
+        app:layout_constraintEnd_toStartOf="@+id/cancelButton"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/exitButton_ShowActivity"
+        app:layout_constraintStart_toEndOf="@+id/exitButton"
         tools:layout_conversion_absoluteHeight="48dp"
         tools:layout_conversion_absoluteWidth="352dp"
         tools:visibility="visible" />
 
     <Button
-        android:id="@+id/cancelButton_ShowActivity"
+        android:id="@+id/cancelButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:onClick="cancel"
         android:text="@string/cancel"
         android:textAppearance="?android:attr/textAppearanceLarge"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/entranceButton_ShowActivity"
+        app:layout_constraintStart_toEndOf="@+id/entranceButton"
         tools:layout_conversion_absoluteHeight="5dp"
         tools:layout_conversion_absoluteWidth="352dp" />
 
@@ -262,7 +259,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/entranceButton_ShowActivity"
+        app:layout_constraintBottom_toTopOf="@+id/entranceButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
