@@ -12,11 +12,11 @@ android {
             storePassword 'midburn12!@'
         }
     }
-    compileSdkVersion 28
+    compileSdkVersion 27
     defaultConfig {
         applicationId "com.midburn.gate.midburngate"
         minSdkVersion 17
-        targetSdkVersion 28
+        targetSdkVersion 27
         versionCode 9
         versionName "2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
