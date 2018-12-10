@@ -47,4 +47,6 @@
     <string name="insert_manually">או הזן פרטים ידנית:</string>
     <string name="no_early_arrival_message">לא נמצאה הקצאה לכניסה מוקדמת</string>
     <string name="car_counter_button">car counter button</string>
+    <string name="early_arrival_production">כניסה מוקדמת הפקה</string>
+    <string name="wheel_chaired_logo">wheel chaired logo</string>
 </resources>

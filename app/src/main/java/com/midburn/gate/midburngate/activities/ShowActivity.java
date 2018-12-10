@@ -3,6 +3,7 @@ package com.midburn.gate.midburngate.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.Group;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -37,7 +38,7 @@ public class ShowActivity
     private TextView mTicketNumberTextView;
     private TextView mTicketOwnerNameTextView;
     private TextView mTicketTypeTextView;
-    private LinearLayout mDisabledLayout;
+    private Group mDisabledLayout;
     private TextView mTicketOwnerIdTextView;
 
     private Button mEntranceButton;
