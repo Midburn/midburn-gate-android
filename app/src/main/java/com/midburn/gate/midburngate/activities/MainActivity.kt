@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun manuallyInput() {
+    private fun manuallyInput() {
         val invitationNumber = invitationNumberEditText.text.toString()
         val ticketNumber = ticketNumberEditText.text.toString()
         if (TextUtils.isEmpty(invitationNumber) || TextUtils.isEmpty(ticketNumber)) {
@@ -148,8 +148,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showCarDialog() {
-        mCarsDialog = CarsDialog(this, { v ->
+    private fun showCarDialog() {
+        mCarsDialog = CarsDialog(this, {
             Log.d(AppConsts.TAG, "carEnter")
 
             AppUtils.showProgressDialog(mProgressDialog!!)
@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity() {
                 }
             })
 
-        }, { v ->
+        }, {
             Log.d(AppConsts.TAG, "carExit")
             AppUtils.showProgressDialog(mProgressDialog!!)
             if (mCarsDialog != null) {
@@ -190,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         mCarsDialog!!.show()
     }
 
-    fun scanQR() {
+    private fun scanQR() {
         try {
             //start the scanning activity from the com.google.zxing.client.android.SCAN intent
             val intent = Intent(AppConsts.ACTION_SCAN)
@@ -233,7 +233,7 @@ class MainActivity : AppCompatActivity() {
         getTicketDetailsButton.setOnClickListener { manuallyInput() }
         carCounterImageButton.setOnClickListener { showCarDialog() }
         mProgressDialog = ProgressDialog(this)
-        mNeedToDownloadScannerAppClickListener = DialogInterface.OnClickListener { dialog, _ ->
+        mNeedToDownloadScannerAppClickListener = DialogInterface.OnClickListener { _, _ ->
             val uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             try {
@@ -242,7 +242,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e(AppConsts.TAG, e.message)
             }
         }
-        mBackPressedClickListener = DialogInterface.OnClickListener { dialog, which ->
+        mBackPressedClickListener = DialogInterface.OnClickListener { _, which ->
             //exit app
             finishAffinity()
         }
