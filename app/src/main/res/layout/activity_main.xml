@@ -5,8 +5,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.midburn.gate.midburngate.activities.MainActivity"
-    tools:layout_editor_absoluteY="81dp">
+    tools:context="com.midburn.gate.midburngate.activities.MainActivity">
 
     <Button
         android:id="@+id/scanQRCode"
