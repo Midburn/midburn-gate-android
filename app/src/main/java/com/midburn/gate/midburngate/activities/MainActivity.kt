@@ -19,7 +19,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-
 import com.midburn.gate.midburngate.OperationFinishedListener
 import com.midburn.gate.midburngate.R
 import com.midburn.gate.midburngate.consts.AppConsts
@@ -27,12 +26,9 @@ import com.midburn.gate.midburngate.dialogs.CarsDialog
 import com.midburn.gate.midburngate.network.NetworkApi
 import com.midburn.gate.midburngate.network.TicketNew
 import com.midburn.gate.midburngate.utils.AppUtils
-
+import kotlinx.android.synthetic.main.activity_main.*
 import net.hockeyapp.android.CrashManager
 import net.hockeyapp.android.UpdateManager
-
-import com.midburn.gate.midburngate.activities.SplashActivity.EVENTS_LIST
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
