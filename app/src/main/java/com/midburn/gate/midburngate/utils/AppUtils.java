@@ -3,12 +3,10 @@ package com.midburn.gate.midburngate.utils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
@@ -17,7 +15,6 @@ import com.midburn.gate.midburngate.OperationFinishedListener;
 import com.midburn.gate.midburngate.R;
 import com.midburn.gate.midburngate.application.MainApplication;
 import com.midburn.gate.midburngate.consts.AppConsts;
-import com.midburn.gate.midburngate.network.NetworkApi;
 
 import java.io.IOException;
 import java.util.List;
