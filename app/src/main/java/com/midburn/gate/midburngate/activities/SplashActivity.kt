@@ -8,11 +8,10 @@ import android.text.TextUtils
 import android.util.Log
 import com.midburn.gate.midburngate.R
 import com.midburn.gate.midburngate.consts.AppConsts
+import com.midburn.gate.midburngate.consts.IntentExtras.EVENTS_LIST
 import com.midburn.gate.midburngate.network.NetworkApi
 import com.midburn.gate.midburngate.utils.AppUtils
 import java.util.*
-
-const val EVENTS_LIST = "EVENTS_LIST"
 
 class SplashActivity : AppCompatActivity() {
     private var failureCounter: Int = 0

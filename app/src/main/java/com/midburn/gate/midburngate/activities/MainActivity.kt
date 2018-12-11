@@ -22,6 +22,7 @@ import android.view.View
 import com.midburn.gate.midburngate.OperationFinishedListener
 import com.midburn.gate.midburngate.R
 import com.midburn.gate.midburngate.consts.AppConsts
+import com.midburn.gate.midburngate.consts.IntentExtras.EVENTS_LIST
 import com.midburn.gate.midburngate.dialogs.CarsDialog
 import com.midburn.gate.midburngate.network.NetworkApi
 import com.midburn.gate.midburngate.network.TicketNew

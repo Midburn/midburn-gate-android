@@ -1,5 +1,8 @@
 package com.midburn.gate.midburngate.consts
 
+object IntentExtras {
+    const val EVENTS_LIST = "EVENTS_LIST"
+}
 object AppConsts {
 
     const val TAG = "MIDBURN_GATE"
