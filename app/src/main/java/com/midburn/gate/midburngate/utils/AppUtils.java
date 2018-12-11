@@ -48,27 +48,6 @@ public class AppUtils {
 		return netInfo != null && netInfo.isConnected();
 	}
 
-	public static void doGETHttpRequest(final HttpUrl url, final HttpRequestListener httpRequestListener) {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Log.d(AppConsts.TAG, "url: " + url);
-					Request request = new Request.Builder().url(url)
-					                                       .build();
-					Response response = MainApplication.getHttpClient()
-					                                   .newCall(request)
-					                                   .execute();
-					httpRequestListener.onResponse(response);
-				} catch (IOException e) {
-					Log.e(AppConsts.TAG, e.getMessage());
-					httpRequestListener.onResponse(null);
-				}
-			}
-		});
-		thread.start();
-	}
-
 	public static void doPOSTHttpRequest(final HttpUrl url, final String requestBodyJson, final HttpRequestListener httpRequestListener) {
 		Log.d(AppConsts.TAG, "url: " + url);
 		Log.d(AppConsts.TAG, "requestBody: " + requestBodyJson);
