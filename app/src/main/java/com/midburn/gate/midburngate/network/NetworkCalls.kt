@@ -9,7 +9,7 @@ import retrofit2.http.Path
 
 interface NetworkCalls {
 
-    data class BarcodeTicketBody(val event_id: String, val barcode: String)
+    data class BarcodeTicketBody(val event_id: String, val barcode: String, val groupId: Int? = null)
     data class ManualTicketBody(val event_id: String, val ticket: String, val order: String)
 
     @POST("/api/gate/get-ticket")

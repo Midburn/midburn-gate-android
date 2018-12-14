@@ -32,6 +32,11 @@ object NetworkApi {
         performCall(context, callback, networkCalls.gateExit(barcodeTicketBody))
     }
 
+    fun gateEnter(context: Context, eventId: String, barcode: String, callback: Callback<Unit>, groupId: Int? = null) {
+        val barcodeTicketBody = NetworkCalls.BarcodeTicketBody(eventId, barcode, groupId)
+        performCall(context, callback, networkCalls.gateEnter(barcodeTicketBody))
+    }
+
     fun getEvents(context: Context, callback: Callback<List<String>>) {
         if (!isConnected(context)) {
             callback.onFailure(Throwable("Not connected to a network"))
