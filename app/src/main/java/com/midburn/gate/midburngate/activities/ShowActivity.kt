@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import com.midburn.gate.midburngate.HttpRequestListener
 import com.midburn.gate.midburngate.R
 import com.midburn.gate.midburngate.consts.AppConsts
 import com.midburn.gate.midburngate.network.NetworkApi
@@ -16,10 +15,7 @@ import com.midburn.gate.midburngate.utils.AppUtils
 import kotlinx.android.synthetic.main.activity_show.*
 
 class ShowActivity : AppCompatActivity() {
-    private var mState: State? = null
     private var mAction: Action? = null
-
-    private var mHttpRequestListener: HttpRequestListener? = null
 
     private lateinit var mGateCode: String
     private lateinit var mTicket: TicketNew
@@ -30,7 +26,28 @@ class ShowActivity : AppCompatActivity() {
             runOnUiThread { progressBar_ShowActivity.visibility = View.GONE }
 
             AppUtils.playMusic(this@ShowActivity, AppConsts.OK_MUSIC)
-            showConfirmationAlert()
+            var message: String
+            if (mAction == Action.ENTER) {
+                message = mTicket.ticket.holder_name + " נכנס/ה בהצלחה לאירוע."
+                if (mTicket.gate_status == TicketNew.State.EARLY_ENTRANCE) {
+                    message += "\n" + "הקצאה לכניסה מוקדמת - " + if (mSelectedGroup != null)
+                        mSelectedGroup!!
+                                .name
+                    else
+                        "הפקה"
+                }
+            } else {
+                message = mTicket.ticket.holder_name + " יצא/ה בהצלחה מהאירוע."
+            }
+            val builder = AlertDialog.Builder(this@ShowActivity)
+            builder.setMessage(message)
+                    .setTitle("אישור")
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        val intent = Intent(this@ShowActivity, MainActivity::class.java)
+                        startActivity(intent)
+                    }
+            val dialog = builder.create()
+            dialog.show()
         }
 
         override fun onFailure(throwable: Throwable) {
@@ -46,11 +63,6 @@ class ShowActivity : AppCompatActivity() {
         }
     }
 
-
-    private enum class State {
-        ERALY_ENTRANCE,
-        MIDBURN
-    }
 
     private enum class Action {
         ENTER,
@@ -88,12 +100,11 @@ class ShowActivity : AppCompatActivity() {
                     .show()
             return
         }
-        when (mState) {
-            State.ERALY_ENTRANCE -> handleGroupTypes()
-            State.MIDBURN -> {
+        when (mTicket.gate_status) {
+            TicketNew.State.EARLY_ENTRANCE -> handleGroupTypes()
+            TicketNew.State.MIDBURN -> {
                 NetworkApi.gateEnter(this, mGateCode, mTicket.ticket.barcode, gateCallback)
             }
-            else -> Log.e(AppConsts.TAG, "unknown state. mState: " + mState!!)
         }
     }
 
@@ -154,33 +165,6 @@ class ShowActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun showConfirmationAlert() {
-        var message: String
-
-        if (mAction == Action.ENTER) {
-            message = mTicket.ticket.holder_name + " נכנס/ה בהצלחה לאירוע."
-            if (mState == State.ERALY_ENTRANCE) {
-                message += "\n" + "הקצאה לכניסה מוקדמת - " + if (mSelectedGroup != null)
-                    mSelectedGroup!!
-                            .name
-                else
-                    "הפקה"
-            }
-        } else {
-            message = mTicket.ticket.holder_name + " יצא/ה בהצלחה מהאירוע."
-        }
-
-        val builder = AlertDialog.Builder(this@ShowActivity)
-        builder.setMessage(message)
-                .setTitle("אישור")
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    val intent = Intent(this@ShowActivity, MainActivity::class.java)
-                    startActivity(intent)
-                }
-        val dialog = builder.create()
-        dialog.show()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show)
@@ -221,12 +205,6 @@ class ShowActivity : AppCompatActivity() {
             disabledLayout_ShowActivity.visibility = View.GONE
         }
 
-        //early arrival mode
-        mState = if ((intent.getSerializableExtra("ticketDetails") as TicketNew).gate_status == "early_arrival") {
-            State.ERALY_ENTRANCE
-        } else { //otherwise, this is the real deal
-            State.MIDBURN
-        }
     }
 
     private fun toggleButtonsState() {

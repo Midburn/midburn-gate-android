@@ -1,8 +1,16 @@
 package com.midburn.gate.midburngate.network
 
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-data class TicketNew(val ticket: InnerTicket, val gate_status: String) : Serializable
+data class TicketNew(val ticket: InnerTicket, val gate_status: State) : Serializable {
+    enum class State {
+        @SerializedName("early_arrival")
+        EARLY_ENTRANCE,
+        @SerializedName("regular")
+        MIDBURN
+    }
+}
 
 data class InnerTicket(val barcode: String, val ticket_number: Int, val order_id: Int, val holder_name: String,
                        val type: String, val inside_event: Int, val israeli_id: String,
