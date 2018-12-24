@@ -21,6 +21,7 @@ class ShowActivity : AppCompatActivity() {
     private lateinit var mTicket: TicketNew
     private var mSelectedGroup: com.midburn.gate.midburngate.network.Group? = null
 
+
     fun exit() {
         val hasInternetConnection = AppUtils.isConnected(this)
         if (!hasInternetConnection) {
