@@ -33,7 +33,7 @@ import net.hockeyapp.android.UpdateManager
 
 class MainActivity : AppCompatActivity() {
 
-    private var mCarsDialog: CarsDialog? = null
+    private lateinit var mCarsDialog: CarsDialog
     private var mProgressDialog: ProgressDialog? = null
 
     private var mNeedToDownloadScannerAppClickListener: DialogInterface.OnClickListener? = null
@@ -146,13 +146,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showCarDialog() {
-        mCarsDialog = CarsDialog(this, {
+        mCarsDialog = CarsDialog(this, View.OnClickListener {
             Log.d(AppConsts.TAG, "carEnter")
 
             AppUtils.showProgressDialog(mProgressDialog!!)
-            if (mCarsDialog != null) {
-                mCarsDialog!!.dismiss()
-            }
+            mCarsDialog.dismiss()
             NetworkApi.enterCar(this, mGateCode!!, object : NetworkApi.Callback<Unit> {
                 override fun onSuccess(response: Unit) {
                     mProgressDialog!!.dismiss()
@@ -166,12 +164,10 @@ class MainActivity : AppCompatActivity() {
                 }
             })
 
-        }, {
+        }, View.OnClickListener {
             Log.d(AppConsts.TAG, "carExit")
             AppUtils.showProgressDialog(mProgressDialog!!)
-            if (mCarsDialog != null) {
-                mCarsDialog!!.dismiss()
-            }
+            mCarsDialog.dismiss()
             NetworkApi.exitCar(this@MainActivity, mGateCode!!, object : NetworkApi.Callback<Unit> {
                 override fun onSuccess(response: Unit) {
                     mProgressDialog!!.dismiss()
@@ -184,7 +180,7 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         })
-        mCarsDialog!!.show()
+        mCarsDialog.show()
     }
 
     private fun scanQR() {
