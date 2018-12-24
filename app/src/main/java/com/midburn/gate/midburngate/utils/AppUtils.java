@@ -10,24 +10,13 @@ import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
-import com.midburn.gate.midburngate.HttpRequestListener;
 import com.midburn.gate.midburngate.OperationFinishedListener;
 import com.midburn.gate.midburngate.R;
-import com.midburn.gate.midburngate.application.MainApplication;
 import com.midburn.gate.midburngate.consts.AppConsts;
 
-import java.io.IOException;
 import java.util.List;
 
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-
 public class AppUtils {
-
-	private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public static void playMusic(Context context, int which) {
 		switch (which) {
@@ -46,31 +35,6 @@ public class AppUtils {
 		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netInfo = cm.getActiveNetworkInfo();
 		return netInfo != null && netInfo.isConnected();
-	}
-
-	public static void doPOSTHttpRequest(final HttpUrl url, final String requestBodyJson, final HttpRequestListener httpRequestListener) {
-		Log.d(AppConsts.TAG, "url: " + url);
-		Log.d(AppConsts.TAG, "requestBody: " + requestBodyJson);
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				RequestBody body = RequestBody.create(JSON, requestBodyJson);
-				Request request = new Request.Builder().url(url)
-				                                       .post(body)
-				                                       .build();
-				try {
-					Response response = MainApplication.getHttpClient()
-					                                   .newCall(request)
-					                                   .execute();
-
-					httpRequestListener.onResponse(response);
-				} catch (IOException e) {
-					Log.e(AppConsts.TAG, e.getMessage());
-					httpRequestListener.onResponse(null);
-				}
-			}
-		});
-		thread.start();
 	}
 
     public static String getErrorMessage(Context context, String error) {
