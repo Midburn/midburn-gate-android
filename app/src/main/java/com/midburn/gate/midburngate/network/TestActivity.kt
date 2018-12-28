@@ -5,7 +5,11 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.midburn.gate.midburngate.R
+import com.midburn.gate.midburngate.utils.SoundEffect
 import kotlinx.android.synthetic.main.activity_sapak_test.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -76,6 +80,12 @@ class TestActivity : AppCompatActivity() {
                     Snackbar.make(root, "Booooo!", Snackbar.LENGTH_SHORT).show()
                 }
             })
+        }
+
+        okMusicBtn.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                SoundEffect.ok(this@TestActivity)
+            }
         }
     }
 }

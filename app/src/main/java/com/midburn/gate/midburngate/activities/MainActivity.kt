@@ -27,7 +27,11 @@ import com.midburn.gate.midburngate.dialogs.CarsDialog
 import com.midburn.gate.midburngate.network.NetworkApi
 import com.midburn.gate.midburngate.network.TicketNew
 import com.midburn.gate.midburngate.utils.AppUtils
+import com.midburn.gate.midburngate.utils.SoundEffect
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.hockeyapp.android.CrashManager
 import net.hockeyapp.android.UpdateManager
 
@@ -41,6 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     private var mGateCode: String? = null
 
+    private val uiScope = CoroutineScope(Dispatchers.Main)
 
     private val mEventIdFetchedListener = OperationFinishedListener<String> { result ->
         mProgressDialog!!.dismiss()
@@ -66,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         val invitationNumber = invitationNumberEditText.text.toString()
         val ticketNumber = ticketNumberEditText.text.toString()
         if (TextUtils.isEmpty(invitationNumber) || TextUtils.isEmpty(ticketNumber)) {
-            AppUtils.playMusic(this, AppConsts.ERROR_MUSIC)
+            uiScope.launch { SoundEffect.error(this@MainActivity) }
             AlertDialog.Builder(this).setTitle(getString(R.string.manually_validate_dialog_title))
                     .setMessage(getString(R.string.manually_validate_dialog_message))
                     .setPositiveButton(getString(R.string.ok), null)
@@ -115,9 +120,7 @@ class MainActivity : AppCompatActivity() {
             override fun onSuccess(response: TicketNew) {
                 mProgressDialog!!.dismiss()
                 Log.d(AppConsts.TAG, "onResponse called")
-
-                AppUtils.playMusic(this@MainActivity, AppConsts.OK_MUSIC)
-
+                uiScope.launch { SoundEffect.ok(this@MainActivity) }
                 val intent = Intent(this@MainActivity, ShowActivity::class.java)
                 intent.putExtra("event_id", mGateCode)
                 intent.putExtra("ticketDetails", response)
@@ -127,7 +130,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFailure(throwable: Throwable) {
                 throwable.printStackTrace()
-                AppUtils.playMusic(this@MainActivity, AppConsts.ERROR_MUSIC)
+                uiScope.launch { SoundEffect.error(this@MainActivity) }
                 AlertDialog.Builder(this@MainActivity).setTitle("שגיאה")
                         .setMessage(AppUtils.getErrorMessage(this@MainActivity, throwable.message))
                         .setPositiveButton(getString(R.string.ok), null)
@@ -154,13 +157,13 @@ class MainActivity : AppCompatActivity() {
             NetworkApi.enterCar(this, mGateCode!!, object : NetworkApi.Callback<Unit> {
                 override fun onSuccess(response: Unit) {
                     mProgressDialog!!.dismiss()
-                    AppUtils.playMusic(this@MainActivity, AppConsts.OK_MUSIC)
+                    uiScope.launch { SoundEffect.ok(this@MainActivity) }
                 }
 
                 override fun onFailure(throwable: Throwable) {
                     Log.w(AppConsts.TAG, throwable.message)
                     mProgressDialog!!.dismiss()
-                    AppUtils.playMusic(this@MainActivity, AppConsts.ERROR_MUSIC)
+                    uiScope.launch { SoundEffect.error(this@MainActivity) }
                 }
             })
 
@@ -171,12 +174,12 @@ class MainActivity : AppCompatActivity() {
             NetworkApi.exitCar(this@MainActivity, mGateCode!!, object : NetworkApi.Callback<Unit> {
                 override fun onSuccess(response: Unit) {
                     mProgressDialog!!.dismiss()
-                    AppUtils.playMusic(this@MainActivity, AppConsts.OK_MUSIC)
+                    uiScope.launch { SoundEffect.ok(this@MainActivity) }
                 }
 
                 override fun onFailure(throwable: Throwable) {
                     mProgressDialog!!.dismiss()
-                    AppUtils.playMusic(this@MainActivity, AppConsts.ERROR_MUSIC)
+                    uiScope.launch { SoundEffect.error(this@MainActivity) }
                 }
             })
         })
@@ -192,7 +195,7 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, 0)
         } catch (anfe: ActivityNotFoundException) {
             //on catch, show the download dialog
-            AppUtils.playMusic(this, AppConsts.ERROR_MUSIC)
+            uiScope.launch { SoundEffect.error(this@MainActivity) }
             AlertDialog.Builder(this).setTitle("סורק לא נמצא")
                     .setMessage("להוריד אפליקציית סורק?")
                     .setPositiveButton("כן", mNeedToDownloadScannerAppClickListener)

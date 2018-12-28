@@ -13,14 +13,18 @@ import com.midburn.gate.midburngate.network.InnerTicket
 import com.midburn.gate.midburngate.network.NetworkApi
 import com.midburn.gate.midburngate.network.TicketNew
 import com.midburn.gate.midburngate.utils.AppUtils
+import com.midburn.gate.midburngate.utils.SoundEffect
 import kotlinx.android.synthetic.main.activity_show.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ShowActivity : AppCompatActivity() {
 
     private lateinit var mGateCode: String
     private lateinit var mTicket: TicketNew
     private var mSelectedGroup: com.midburn.gate.midburngate.network.Group? = null
-
+    private val uiScope = CoroutineScope(Dispatchers.Main)
 
     fun exit() {
         val hasInternetConnection = AppUtils.isConnected(this)
@@ -42,8 +46,7 @@ class ShowActivity : AppCompatActivity() {
         NetworkApi.gateExit(this, mGateCode, barcode, object : NetworkApi.Callback<Unit> {
             override fun onSuccess(response: Unit) {
                 runOnUiThread { progressBar_ShowActivity.visibility = View.GONE }
-
-                AppUtils.playMusic(this@ShowActivity, AppConsts.OK_MUSIC)
+                uiScope.launch { SoundEffect.ok(this@ShowActivity) }
                 val builder = AlertDialog.Builder(this@ShowActivity)
                 builder.setMessage(mTicket.ticket.holder_name + " יצא/ה בהצלחה מהאירוע.")
                         .setTitle("אישור")
@@ -59,7 +62,7 @@ class ShowActivity : AppCompatActivity() {
             override fun onFailure(throwable: Throwable) {
                 runOnUiThread { progressBar_ShowActivity.visibility = View.GONE }
                 throwable.printStackTrace()
-                AppUtils.playMusic(this@ShowActivity, AppConsts.ERROR_MUSIC)
+                uiScope.launch { SoundEffect.error(this@ShowActivity) }
                 AlertDialog.Builder(this@ShowActivity).setTitle("פעולה נכשלה")
                         .setMessage("")
                         .setPositiveButton(getString(R.string.ok), null)
@@ -93,7 +96,7 @@ class ShowActivity : AppCompatActivity() {
                     override fun onFailure(throwable: Throwable) {
                         runOnUiThread { progressBar_ShowActivity.visibility = View.GONE }
                         throwable.printStackTrace()
-                        AppUtils.playMusic(this@ShowActivity, AppConsts.ERROR_MUSIC)
+                        uiScope.launch { SoundEffect.error(this@ShowActivity) }
                         AlertDialog.Builder(this@ShowActivity).setTitle("פעולה נכשלה")
                                 .setMessage("")
                                 .setPositiveButton(getString(R.string.ok), null)
@@ -107,7 +110,7 @@ class ShowActivity : AppCompatActivity() {
     }
 
     private fun showUserEnteredSuccessfullyDialog() {
-        AppUtils.playMusic(this@ShowActivity, AppConsts.OK_MUSIC)
+        uiScope.launch { SoundEffect.ok(this@ShowActivity) }
         var message: String = mTicket.ticket.holder_name + " נכנס/ה בהצלחה לאירוע."
         if (mTicket.gate_status == TicketNew.State.EARLY_ENTRANCE) {
             message += "\n" + "הקצאה לכניסה מוקדמת - " + if (mSelectedGroup != null)
@@ -141,7 +144,7 @@ class ShowActivity : AppCompatActivity() {
                 override fun onFailure(throwable: Throwable) {
                     runOnUiThread { progressBar_ShowActivity.visibility = View.GONE }
                     throwable.printStackTrace()
-                    AppUtils.playMusic(this@ShowActivity, AppConsts.ERROR_MUSIC)
+                    uiScope.launch { SoundEffect.error(this@ShowActivity) }
                     AlertDialog.Builder(this@ShowActivity).setTitle("פעולה נכשלה")
                             .setMessage("")
                             .setPositiveButton(getString(R.string.ok), null)
@@ -186,7 +189,7 @@ class ShowActivity : AppCompatActivity() {
                 override fun onFailure(throwable: Throwable) {
                     runOnUiThread { progressBar_ShowActivity.visibility = View.GONE }
                     throwable.printStackTrace()
-                    AppUtils.playMusic(this@ShowActivity, AppConsts.ERROR_MUSIC)
+                    uiScope.launch { SoundEffect.error(this@ShowActivity) }
                     AlertDialog.Builder(this@ShowActivity).setTitle("פעולה נכשלה")
                             .setMessage("")
                             .setPositiveButton(getString(R.string.ok), null)
