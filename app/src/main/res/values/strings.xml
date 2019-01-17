@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Midburn Gate</string>
-    <string name="invitation_number">מספר הזמנה:</string>
+    <string name="invitation_number">מספר הזמנה</string>
     <string name="ticket_number">מספר כרטיס:</string>
     <string name="send">שלח</string>
     <string name="manually_validate_dialog_title">חסר זיהוי</string>
@@ -11,7 +11,7 @@
     <string name="ticket_owner_name">שם:</string>
     <string name="ticket_type">סוג הכרטיס:</string>
     <string name="entrance_date">תאריך כניסה:</string>
-    <string name="exit">בתוך האירוע</string>
+    <string name="exit">הוצא מהאירוע</string>
     <string name="entrance">הכנס לאירוע</string>
     <string name="gate_code">קוד שער:</string>
     <string name="insert_gate_code">הכנס קוד אירוע</string>
@@ -46,4 +46,8 @@
     <string name="allowed_park_disabled">המשתמש רשאי לחנות בחניית נכים</string>
     <string name="insert_manually">או הזן פרטים ידנית:</string>
     <string name="no_early_arrival_message">לא נמצאה הקצאה לכניסה מוקדמת</string>
+    <string name="car_counter_button">car counter button</string>
+    <string name="early_arrival_production">כניסה מוקדמת הפקה</string>
+    <string name="wheel_chaired_logo">wheel chaired logo</string>
+    <string name="midburn_splash_screen">Midburn splash screen</string>
 </resources>

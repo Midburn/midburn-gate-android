@@ -1,34 +1,61 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
+ext.retrofit_version = '2.4.0'
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    signingConfigs {
+        config {
+            keyAlias 'mid_gate'
+            keyPassword 'midGate12!@'
+            storeFile file('/home/alex/AndroidStudioProjects/midburn-gate-android/midburn_keystore.jks')
+            storePassword 'midburn12!@'
+        }
+    }
+    compileSdkVersion 27
     defaultConfig {
         applicationId "com.midburn.gate.midburngate"
         minSdkVersion 17
-        targetSdkVersion 25
-        versionCode 7
-        versionName "1.0.3"
+        targetSdkVersion 27
+        versionCode 9
+        versionName "2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "b0a720d0c07143bd9aa02b6b2461273a"]
+        signingConfig signingConfigs.config
     }
     buildTypes {
+        debug {
+            buildConfigField "boolean", "USE_MOCK", 'Boolean.parseBoolean("false")'
+        }
         release {
+            buildConfigField "boolean", "USE_MOCK", 'Boolean.parseBoolean("false")'
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "com.android.support:design:$support_version"
+    implementation 'net.hockeyapp.android:HockeySDK:4.1.4'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:retrofit-mock:$retrofit_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation "com.android.support:recyclerview-v7:$support_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0'
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    testCompile 'junit:junit:4.12'
-    compile 'com.squareup.okhttp3:okhttp:3.7.0'
-
-    compile 'net.hockeyapp.android:HockeySDK:4.1.4'
+    testImplementation 'junit:junit:4.12'
 }
