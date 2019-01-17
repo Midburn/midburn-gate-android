@@ -19,7 +19,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.midburn.gate.midburngate.OperationFinishedListener
 import com.midburn.gate.midburngate.R
 import com.midburn.gate.midburngate.consts.AppConsts
 import com.midburn.gate.midburngate.consts.IntentExtras.EVENTS_LIST
@@ -47,9 +46,9 @@ class MainActivity : AppCompatActivity() {
 
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
-    private val mEventIdFetchedListener = OperationFinishedListener<String> { result ->
+    private val onEventSelected: (eventId: String) -> Unit = {
         mProgressDialog!!.dismiss()
-        mGateCode = result
+        mGateCode = it
         onEventIdChanged()
     }
 
@@ -57,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         override fun onSuccess(response: List<String>) {
             mProgressDialog!!.dismiss()
             if (response.isNotEmpty()) {
-                AppUtils.showEventsDialog(this@MainActivity, response, mEventIdFetchedListener)
+                AppUtils.showEventsDialog(this@MainActivity, response, onEventSelected)
             }
         }
 
@@ -252,7 +251,7 @@ class MainActivity : AppCompatActivity() {
                 AppUtils.showProgressDialog(mProgressDialog!!)
                 NetworkApi.getEvents(this, mEventsCallback)
             } else {
-                AppUtils.showEventsDialog(this, events, mEventIdFetchedListener)
+                AppUtils.showEventsDialog(this, events, onEventSelected)
             }
         }
         if (TextUtils.isEmpty(mGateCode)) {

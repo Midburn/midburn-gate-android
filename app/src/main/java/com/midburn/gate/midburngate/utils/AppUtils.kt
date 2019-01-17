@@ -8,7 +8,6 @@ import android.net.ConnectivityManager
 import android.support.annotation.RawRes
 import android.support.v7.app.AlertDialog
 import android.util.Log
-import com.midburn.gate.midburngate.OperationFinishedListener
 import com.midburn.gate.midburngate.R
 import com.midburn.gate.midburngate.consts.AppConsts
 import kotlinx.coroutines.Dispatchers
@@ -68,7 +67,7 @@ object AppUtils {
         progressDialog.show()
     }
 
-    fun showEventsDialog(context: Context, events: List<String>, stringOperationFinishedListener: OperationFinishedListener<String>) {
+    fun showEventsDialog(context: Context, events: List<String>, onEventSelected: (eventId: String) -> Unit) {
         // show event selection dialog
         val eventsArray = events.toTypedArray<CharSequence>()
         val builder = AlertDialog.Builder(context)
@@ -77,8 +76,7 @@ object AppUtils {
             val eventId = eventsArray[which].toString()
             Log.d(AppConsts.TAG, "$eventId was clicked.")
             persistEventId(context, eventId)
-            stringOperationFinishedListener.onFinish(eventId)
-
+            onEventSelected(eventId)
         }
         builder.show()
     }
